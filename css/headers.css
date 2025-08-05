@@ -1,0 +1,219 @@
+/* /galaxy_the_gadget/css/header.css */
+:root {
+  --galaxy-deep: #0f0c29;       /* Deep space blue */
+  --galaxy-mid: #302b63;        /* Cosmic purple */
+  --galaxy-light: #24243e;      /* Nebula tint */
+  --electric-blue: #00d2ff;     /* Vibrant tech blue */
+  --neon-pink: #ff00ff;         /* Accent pink */
+  --starlight: #e2e2e2;         /* Soft white */
+}
+
+/* Navbar - Cosmic Gradient */
+.navbar {
+  background: linear-gradient(135deg, var(--galaxy-deep) 0%, var(--galaxy-mid) 100%) !important;
+  border-bottom: 1px solid rgba(0, 210, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  
+}
+
+/* Brand with Electric Glow */
+.navbar-brand {
+  font-weight: 800;
+  background: linear-gradient(to right, var(--electric-blue), var(--neon-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+  font-size: 1.7rem;
+  letter-spacing: 1px;
+}
+
+/* Navigation Links - Hover Effects */
+.nav-link {
+  color: var(--starlight) !important;
+  position: relative;
+  margin: 0 0.5rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.nav-link:hover {
+  color: white !important;
+  text-shadow: 0 0 8px rgba(0, 210, 255, 0.7);
+}
+
+/* Active Link Glow Effect */
+.nav-item.active .nav-link {
+  color: var(--electric-blue) !important;
+  font-weight: 600;
+}
+
+.nav-item.active .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, var(--electric-blue), var(--neon-pink));
+  border-radius: 2px;
+  animation: linkGlow 1.5s infinite alternate;
+}
+
+@keyframes linkGlow {
+  0% { opacity: 0.7; box-shadow: 0 0 5px var(--electric-blue); }
+  100% { opacity: 1; box-shadow: 0 0 15px var(--electric-blue); }
+}
+
+/* User Profile Special Styling */
+.navbar-nav .nav-item:last-child .nav-link {
+  background: rgba(0, 210, 255, 0.15);
+  border-radius: 20px;
+  padding: 0.4rem 1.2rem !important;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-item:last-child .nav-link:hover {
+  background: rgba(0, 210, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Mobile Menu Toggle */
+.navbar-toggler {
+  color: var(--starlight);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 210, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* /galaxy_the_gadget/assets/css/style.css */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+  color: #f0f0f0;
+  min-height: 100vh;
+}
+
+/* Cosmic Section Backgrounds */
+.section-dark {
+  background: rgba(15, 12, 41, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(0, 210, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Stellar Cards */
+.card {
+  background: rgba(48, 43, 99, 0.4);
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 210, 255, 0.2);
+  background: rgba(48, 43, 99, 0.6);
+}
+
+/* Electric Buttons */
+.btn-primary {
+  background: linear-gradient(45deg, var(--electric-blue), #00a1ff);
+  border: none;
+  border-radius: 50px;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 210, 255, 0.6);
+  background: linear-gradient(45deg, #00a1ff, var(--electric-blue));
+}
+
+/* Neon Accents */
+.neon-text {
+  text-shadow: 0 0 10px var(--electric-blue), 0 0 20px var(--electric-blue);
+}
+
+/* Starry Background Effect (optional) */
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+
+/* Logo and Brand Styling */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand img {
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover img {
+  transform: rotate(15deg) scale(1.1);
+}
+
+.brand-text {
+  background: linear-gradient(to right, #00d2ff, #ff00ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+  font-size: 1.5rem;
+}
+
+/* Navbar Icons */
+.nav-link i {
+  width: 20px;
+  text-align: center;
+}
+
+/* Sticky Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 100%) !important;
+  border-bottom: 1px solid rgba(0, 210, 255, 0.2);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  padding: 0.5rem 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 991.98px) {
+  .navbar-brand img {
+    height: 30px;
+  }
+  
+  .brand-text {
+    font-size: 1.2rem;
+  }
+  
+  .nav-link i {
+    margin-right: 0.5rem;
+  }
+}
+
+

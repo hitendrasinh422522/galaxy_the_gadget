@@ -1,0 +1,123 @@
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #e3f2fd, #fce4ec);
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Hero Section */
+.bg-light {
+  background: linear-gradient(135deg, #f5f7fa, #e0f7fa);
+  border-left: 8px solid #00bcd4;
+  border-radius: 20px;
+  transition: all 0.4s ease;
+}
+
+.bg-light:hover {
+  box-shadow: 0 12px 30px rgba(0, 188, 212, 0.2);
+  transform: scale(1.015);
+}
+
+/* Hero Button */
+.btn-primary {
+  background: linear-gradient(45deg, #00bcd4, #2196f3);
+  border: none;
+  color: #fff;
+  transition: 0.3s ease-in-out;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 188, 212, 0.3);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #0288d1, #1976d2);
+  transform: scale(1.07);
+}
+
+/* Product Cards */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to bottom right, #ffffff, #f0f4f8);
+}
+
+.card-img-top {
+  height: 250px;
+  object-fit: cover;
+  transition: 0.3s ease;
+  border-bottom: 1px solid #eee;
+}
+
+.card-img-top:hover {
+  filter: brightness(1.1);
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #00acc1;
+}
+
+.card-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+.fw-bold {
+  color: #212121;
+  font-size: 1.1rem;
+}
+
+/* View Details Button */
+.btn-outline-primary {
+  border-color: #00acc1;
+  color: #00acc1;
+  transition: 0.3s ease-in-out;
+  font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+  background-color: #00acc1;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 172, 193, 0.3);
+}
+
+/* Responsive Grid Fix */
+@media (max-width: 767px) {
+  .card-img-top {
+    height: 200px;
+  }
+
+  .display-5 {
+    font-size: 2rem;
+  }
+
+  .fs-4 {
+    font-size: 1rem;
+  }
+}
+
+/* Animation */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.card:hover {
+  animation: pulse 0.5s ease-in-out;
+}
+
+
+
