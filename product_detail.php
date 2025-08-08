@@ -189,20 +189,40 @@
                 { id: 2, name: "Samsung Galaxy S23", desc: "6.2\" AMOLED, Snapdragon 8 Gen 2, 256GB", price: "₹74,999", rating: 4.3, image: "https://images.samsung.com/is/image/samsung/p6pim/in/sm-s711blgbins/gallery/in-galaxy-s23-fe-s711-479553-sm-s711blgbins-538355944?$684_547_PNG$" },
                 { id: 3, name: "OnePlus 11 5G", desc: "6.7\" Fluid AMOLED, Snapdragon 8 Gen 2, 128GB", price: "₹56,999", rating: 4.6, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLr31uh6fVDlsQQhpXMLowNlRkXnPg5zrg0Q&s" },
                 { id: 4, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" }
+                { id: 5, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" }
+                { id: 6, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" }
+                { id: 7, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" }
+                { id: 8, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" }
             ],
             laptops: [
-                { id: 5, name: "MacBook Pro 14\"", desc: "M2 Pro chip, 16GB RAM, 512GB SSD", price: "₹1,59,999", rating: 4.8, image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-                { id: 6, name: "Dell XPS 15", desc: "Intel i7, 16GB RAM, 1TB SSD, RTX 3050", price: "₹1,39,999", rating: 4.6, image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-                { id: 7, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 9, name: "MacBook Pro 14\"", desc: "M2 Pro chip, 16GB RAM, 512GB SSD", price: "₹1,59,999", rating: 4.8, image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
+                { id: 10, name: "Dell XPS 15", desc: "Intel i7, 16GB RAM, 1TB SSD, RTX 3050", price: "₹1,39,999", rating: 4.6, image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
+                { id: 11, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 12, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 13, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 14, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 15, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 16, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
             ],
             smartwatches: [
-                { id: 8, name: "Apple Watch Series 8", desc: "45mm, GPS + Cellular, Aluminum", price: "₹41,999", rating: 4.7, image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-                { id: 9, name: "Samsung Galaxy Watch 5", desc: "44mm, Bluetooth, Wear OS", price: "₹24,999", rating: 4.4, image: "https://images.unsplash.com/photo-1664478546384-d60aff7bf7c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-                { id: 10, name: "Fitbit Sense 2", desc: "Advanced health & fitness smartwatch", price: "₹29,999", rating: 4.2, image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 17, name: "Apple Watch Series 8", desc: "45mm, GPS + Cellular, Aluminum", price: "₹41,999", rating: 4.7, image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
+                { id: 18, name: "Samsung Galaxy Watch 5", desc: "44mm, Bluetooth, Wear OS", price: "₹24,999", rating: 4.4, image: "https://images.unsplash.com/photo-1664478546384-d60aff7bf7c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
+                { id: 19, name: "Fitbit Sense 2", desc: "Advanced health & fitness smartwatch", price: "₹29,999", rating: 4.2, image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 20, name: "Fitbit Sense 2", desc: "Advanced health & fitness smartwatch", price: "₹29,999", rating: 4.2, image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 21, name: "Fitbit Sense 2", desc: "Advanced health & fitness smartwatch", price: "₹29,999", rating: 4.2, image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 22, name: "Fitbit Sense 2", desc: "Advanced health & fitness smartwatch", price: "₹29,999", rating: 4.2, image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 23, name: "Fitbit Sense 2", desc: "Advanced health & fitness smartwatch", price: "₹29,999", rating: 4.2, image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 24, name: "Fitbit Sense 2", desc: "Advanced health & fitness smartwatch", price: "₹29,999", rating: 4.2, image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
             ],
             smartlights: [
-                { id: 11, name: "Philips Hue White & Color", desc: "Smart LED bulb, 16 million colors", price: "₹5,499", rating: 4.5, image: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-                { id: 12, name: "Wiz Connected Bulb", desc: "Wi-Fi smart bulb, RGBW, 9W", price: "₹2,199", rating: 4.1, image: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 25, name: "Philips Hue White & Color", desc: "Smart LED bulb, 16 million colors", price: "₹5,499", rating: 4.5, image: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
+                { id: 26, name: "Wiz Connected Bulb", desc: "Wi-Fi smart bulb, RGBW, 9W", price: "₹2,199", rating: 4.1, image: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 27, name: "Wiz Connected Bulb", desc: "Wi-Fi smart bulb, RGBW, 9W", price: "₹2,199", rating: 4.1, image: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 28, name: "Wiz Connected Bulb", desc: "Wi-Fi smart bulb, RGBW, 9W", price: "₹2,199", rating: 4.1, image: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 29, name: "Wiz Connected Bulb", desc: "Wi-Fi smart bulb, RGBW, 9W", price: "₹2,199", rating: 4.1, image: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 30, name: "Wiz Connected Bulb", desc: "Wi-Fi smart bulb, RGBW, 9W", price: "₹2,199", rating: 4.1, image: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 31, name: "Wiz Connected Bulb", desc: "Wi-Fi smart bulb, RGBW, 9W", price: "₹2,199", rating: 4.1, image: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
+                { id: 32, name: "Wiz Connected Bulb", desc: "Wi-Fi smart bulb, RGBW, 9W", price: "₹2,199", rating: 4.1, image: "https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
             ]
         };
 
