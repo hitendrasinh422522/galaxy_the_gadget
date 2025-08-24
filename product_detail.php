@@ -189,18 +189,18 @@
         { id: 2, name: "Samsung Galaxy S23", desc: "6.2\" AMOLED, Snapdragon 8 Gen 2, 256GB", price: "₹74,999", rating: 4.3, image: "https://images.samsung.com/is/image/samsung/p6pim/in/sm-s711blgbins/gallery/in-galaxy-s23-fe-s711-479553-sm-s711blgbins-538355944?$684_547_PNG$" },
         { id: 3, name: "OnePlus 11 5G", desc: "6.7\" Fluid AMOLED, Snapdragon 8 Gen 2, 128GB", price: "₹56,999", rating: 4.6, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLr31uh6fVDlsQQhpXMLowNlRkXnPg5zrg0Q&s" },
         { id: 4, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" },
-        { id: 5, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" },
-        { id: 6, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" },
-        { id: 7, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" },
-        { id: 8, name: "Google Pixel 7 Pro", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" }
+        { id: 5, name: "Xiaomi Redmi Note 11T 5G", desc: "6.6\" FHD+ Dot Display, Dimensity 810, 128GB", price: "₹19,999", rating: 4.5, image: "https://www.bewakoof.com/blog/wp-content/uploads/2022/09/Xiaomi-Redmi-Note-11T-5G.jpg" },
+        { id: 6, name: "Moto g85 5g", desc: "6.5\" 3D Curved Display, Snapdragon 6s Gen 3 Processor, 64GB", price: "₹15,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/61wo1ca9wfL._UF1000,1000_QL80_.jpg" },
+        { id: 7, name: "Vivo v27 5g", desc: "6.7\" AMOLED Display, 128GB", price: "₹29,999", rating: 4.5, image: "https://www.myg.in/images/detailed/92/image-removebg-preview_-_2024-11-01T120246.193.png" },
+        { id: 8, name: "One plus nord2 5g", desc: "6.7\" OLED, Tensor G2, 128GB", price: "₹79,999", rating: 4.4, image: "https://m.media-amazon.com/images/I/51OFxuD1GgL.jpg" }
     ],
     laptops: [
         { id: 9, name: "MacBook Pro 14\"", desc: "M2 Pro chip, 16GB RAM, 512GB SSD", price: "₹1,59,999", rating: 4.8, image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
         { id: 10, name: "Dell XPS 15", desc: "Intel i7, 16GB RAM, 1TB SSD, RTX 3050", price: "₹1,39,999", rating: 4.6, image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-        { id: 11, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-        { id: 12, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-        { id: 13, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-        { id: 14, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
+        { id: 11, name: "Acer Aspire 7 Gaming Laptop", desc: "Acer Aspire 7 Intel Core i5 12th Gen", price: "₹56,990", rating: 4.5, image: "https://rukminim2.flixcart.com/image/1200/1200/xif0q/computer/e/e/l/-original-imahcd9qjff2phhz.jpeg" },
+        { id: 12, name: "Lenovo LOQ 15ARP9 ", desc: "AMD Ryzen 5 Gaming Laptop 83JCXA", price: "₹66,490", rating: 4.5, image: "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcRNcxgImUYs8pmrJ0I3HSoy4OsS40vLQfmWv3WcV3sfbfDrPj0hJZLI9tZAzBq5XbAlfIHCjlSgmhffYn01M-Aw9UkVBa3Z_UPU_d_b1wSptGCPqt3Qo3ay9g" },
+        { id: 13, name: "ASUS Vivobook S14 (2025) ", desc: "Intel Core Ultra 7 255H", price: "₹82,990", rating: 4.5, image: "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/6/5/g/-original-imahehkgvkzbqakw.jpeg?q=70" },
+        { id: 14, name: "HP Victus, AMD Ryzen 5 5600H", desc: "NVIDIA RTX 3050, 16GB DDR4, 512GB SSD", price: "₹61,190", rating: 4.5, image: "https://m.media-amazon.com/images/I/71J2F-6lIPL._AC_UY327_FMwebp_QL65_.jpg" },
         { id: 15, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
         { id: 16, name: "HP Spectre x360", desc: "Intel i7, 16GB RAM, 1TB SSD, 13.5\" 3K", price: "₹1,29,999", rating: 4.5, image: "https://images.unsplash.com/photo-1587202372775-e229f1725e0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" }
     ],

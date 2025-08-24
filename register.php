@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 require_once 'config/database.php';
 
 $error = '';
@@ -18,25 +17,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($password !== $confirm) {
         $error = "Passwords do not match.";
     } else {
-        $db = (new Database())->connect();
-        $stmt = $db->prepare("SELECT id FROM users WHERE email = :email");
-        $stmt->bindParam(":email", $email);
-        $stmt->execute();
+        try {
+            $db = (new Database())->connect();
 
-        if ($stmt->rowCount() > 0) {
-            $error = "Email already exists.";
-        } else {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-            $insert = $db->prepare("INSERT INTO users (name, email, password, created_at) VALUES (:name, :email, :password, NOW())");
-            $insert->bindParam(":name", $name);
-            $insert->bindParam(":email", $email);
-            $insert->bindParam(":password", $hash);
-            $insert->execute();
+            // Check if email already exists
+            $stmt = $db->prepare("SELECT id FROM users WHERE email = :email");
+            $stmt->bindParam(":email", $email);
+            $stmt->execute();
 
-            $_SESSION['user_id'] = $db->lastInsertId();
-            $_SESSION['user_name'] = $name;
-            header("Location: index.php");
-            exit;
+            if ($stmt->rowCount() > 0) {
+                $error = "Email already exists.";
+            } else {
+                $hash = password_hash($password, PASSWORD_DEFAULT);
+
+                // Insert new user with role "user" by default
+                $insert = $db->prepare("INSERT INTO users (name, email, password, role) VALUES (:name, :email, :password, 'user')");
+                $insert->bindParam(":name", $name);
+                $insert->bindParam(":email", $email);
+                $insert->bindParam(":password", $hash);
+                $insert->execute();
+
+                // Set session
+                $_SESSION['user_id'] = $db->lastInsertId();
+                $_SESSION['user_name'] = $name;
+                $_SESSION['role'] = "user";
+
+                header("Location: index.php");
+                exit;
+            }
+        } catch (PDOException $e) {
+            $error = "Database error: " . $e->getMessage();
         }
     }
 }
