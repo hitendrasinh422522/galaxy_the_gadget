@@ -1,7 +1,6 @@
 
 
 <?php
-
 session_start();
 include('includes/header.php');
 require_once 'config/database.php';
@@ -16,7 +15,7 @@ $db = (new Database())->connect();
 $error = '';
 $success = '';
 
-// Fetch user data with profile picture
+// Fetch user data with created_at + profile_picture
 $stmt = $db->prepare("SELECT id, name, email, profile_picture, created_at FROM users WHERE id = :id");
 $stmt->bindParam(":id", $_SESSION['user_id']);
 $stmt->execute();
@@ -31,48 +30,39 @@ if (!$user) {
 // Handle profile picture upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) {
     $uploadDir = 'uploads/profile_pictures/';
-    
-    // Create directory if it doesn't exist
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
-    
     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     $file = $_FILES['profile_picture'];
-    
+
     if ($file['error'] === UPLOAD_ERR_OK) {
-        // Validate file type
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = finfo_file($finfo, $file['tmp_name']);
         finfo_close($finfo);
-        
+
         if (!in_array($mime, $allowedTypes)) {
             $error = "Only JPG, PNG, and GIF files are allowed.";
-        } elseif ($file['size'] > 2 * 1024 * 1024) { // 2MB limit
+        } elseif ($file['size'] > 2 * 1024 * 1024) {
             $error = "File size must be less than 2MB.";
         } else {
-            // Generate unique filename
             $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
             $filename = 'user_' . $_SESSION['user_id'] . '_' . time() . '.' . $extension;
             $destination = $uploadDir . $filename;
-            
+
             if (move_uploaded_file($file['tmp_name'], $destination)) {
-                // Delete old profile picture if exists
                 if ($user['profile_picture'] && file_exists($uploadDir . $user['profile_picture'])) {
                     unlink($uploadDir . $user['profile_picture']);
                 }
-                
-                // Update database
                 $update = $db->prepare("UPDATE users SET profile_picture = :picture WHERE id = :id");
                 $update->bindParam(":picture", $filename);
                 $update->bindParam(":id", $_SESSION['user_id']);
-                
                 if ($update->execute()) {
                     $user['profile_picture'] = $filename;
                     $success = "Profile picture updated successfully!";
                 } else {
                     $error = "Failed to update profile picture in database.";
-                    unlink($destination); // Clean up
+                    unlink($destination);
                 }
             } else {
                 $error = "Failed to upload file.";
@@ -96,30 +86,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
     } else {
-        // Check if email is being changed
         if ($email !== $user['email']) {
             $checkEmail = $db->prepare("SELECT id FROM users WHERE email = :email AND id != :id");
             $checkEmail->bindParam(":email", $email);
             $checkEmail->bindParam(":id", $_SESSION['user_id']);
             $checkEmail->execute();
-            
             if ($checkEmail->rowCount() > 0) {
                 $error = "Email already exists.";
             }
         }
 
-        // Check if password is being changed
         $password_changed = false;
         if ($new_password || $confirm_password || $current_password) {
             if (!$current_password) {
                 $error = "Current password is required to change password.";
             } else {
-                // Verify current password
                 $checkPass = $db->prepare("SELECT password FROM users WHERE id = :id");
                 $checkPass->bindParam(":id", $_SESSION['user_id']);
                 $checkPass->execute();
                 $db_password = $checkPass->fetchColumn();
-                
+
                 if (!password_verify($current_password, $db_password)) {
                     $error = "Current password is incorrect.";
                 } elseif ($new_password !== $confirm_password) {
@@ -135,15 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         if (!$error) {
             try {
                 $db->beginTransaction();
-                
-                // Update basic info
                 $update = $db->prepare("UPDATE users SET name = :name, email = :email WHERE id = :id");
                 $update->bindParam(":name", $name);
                 $update->bindParam(":email", $email);
                 $update->bindParam(":id", $_SESSION['user_id']);
                 $update->execute();
-                
-                // Update password if changed
+
                 if ($password_changed) {
                     $hash = password_hash($new_password, PASSWORD_DEFAULT);
                     $updatePass = $db->prepare("UPDATE users SET password = :password WHERE id = :id");
@@ -151,14 +134,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                     $updatePass->bindParam(":id", $_SESSION['user_id']);
                     $updatePass->execute();
                 }
-                
+
                 $db->commit();
-                
-                // Update session
                 $_SESSION['user_name'] = $name;
                 $user['name'] = $name;
                 $user['email'] = $email;
-                
                 $success = "Profile updated successfully!";
             } catch (PDOException $e) {
                 $db->rollBack();
@@ -171,38 +151,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 // Handle account deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_account'])) {
     $confirm_password = $_POST['delete_password'] ?? '';
-    
     if (!$confirm_password) {
         $error = "Please enter your password to confirm account deletion.";
     } else {
-        // Verify password
         $checkPass = $db->prepare("SELECT password FROM users WHERE id = :id");
         $checkPass->bindParam(":id", $_SESSION['user_id']);
         $checkPass->execute();
         $db_password = $checkPass->fetchColumn();
-        
         if (!password_verify($confirm_password, $db_password)) {
             $error = "Incorrect password.";
         } else {
             try {
                 $db->beginTransaction();
-                
-                // Delete profile picture if exists
                 if ($user['profile_picture']) {
                     $filePath = 'uploads/profile_pictures/' . $user['profile_picture'];
                     if (file_exists($filePath)) {
                         unlink($filePath);
                     }
                 }
-                
-                // Delete user
                 $delete = $db->prepare("DELETE FROM users WHERE id = :id");
                 $delete->bindParam(":id", $_SESSION['user_id']);
                 $delete->execute();
-                
                 $db->commit();
-                
-                // Logout and redirect
                 session_destroy();
                 header("Location: login.php?account_deleted=1");
                 exit;
@@ -214,6 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_account'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

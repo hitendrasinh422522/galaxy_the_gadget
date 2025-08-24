@@ -6,7 +6,41 @@ require_once "config/database.php";
 $db = new Database();
 $conn = $db->connect();
 
-// Handle filtering - only date filter since status column doesn't exist
+// Handle order cancellation (delete from database)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_order'])) {
+    $order_id = $_POST['order_id'];
+    $reason = $_POST['cancel_reason'] ?? 'No reason provided';
+    
+    try {
+        // Start transaction
+        $conn->beginTransaction();
+        
+        // First delete order items (to maintain referential integrity)
+        $stmt_items = $conn->prepare("DELETE FROM order_items WHERE order_id = ?");
+        $stmt_items->execute([$order_id]);
+        
+        // Then delete the order
+        $stmt_order = $conn->prepare("DELETE FROM orders WHERE order_id = ?");
+        $stmt_order->execute([$order_id]);
+        
+        // Commit transaction
+        $conn->commit();
+        
+        $_SESSION['message'] = "Order #$order_id has been cancelled and deleted successfully.";
+        $_SESSION['message_type'] = "success";
+        
+    } catch (PDOException $e) {
+        // Rollback transaction on error
+        $conn->rollBack();
+        $_SESSION['message'] = "Error cancelling order: " . $e->getMessage();
+        $_SESSION['message_type'] = "danger";
+    }
+    
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
+}
+
+// Handle filtering - only date filter
 $date_filter = isset($_GET['date']) ? $_GET['date'] : '';
 
 // Build query with filters
@@ -29,6 +63,8 @@ $count_stmt = $conn->prepare("SELECT COUNT(*) as count FROM orders");
 $count_stmt->execute();
 $count_data = $count_stmt->fetch(PDO::FETCH_ASSOC);
 $all_count = $count_data['count'] ?? 0;
+
+include('includes/header.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -161,6 +197,30 @@ $all_count = $count_data['count'] ?? 0;
       margin: 10px 0;
     }
     
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+    
+    .status-active {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .btn-delete {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      color: white;
+    }
+    
+    .btn-delete:hover {
+      background-color: #bb2d3b;
+      border-color: #b02a37;
+      color: white;
+    }
+    
     @media (max-width: 768px) {
       .order-header, .order-footer {
         flex-direction: column;
@@ -178,44 +238,21 @@ $all_count = $count_data['count'] ?? 0;
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <div class="container">
-      <a class="navbar-brand" href="#">
-        <i class="fas fa-rocket me-2"></i>Galaxy The Gadget
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="dashboard.php"><i class="fas fa-home me-1"></i> Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="#"><i class="fas fa-list-alt me-1"></i> Orders</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fas fa-cog me-1"></i> Settings</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fas fa-user me-1"></i> Profile</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
 
   <div class="container mt-4">
     <?php if (isset($_SESSION['message'])): ?>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <div class="alert alert-<?= $_SESSION['message_type'] ?? 'success' ?> alert-dismissible fade show" role="alert">
         <?= $_SESSION['message'] ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
-      <?php unset($_SESSION['message']); ?>
+      <?php 
+      unset($_SESSION['message']); 
+      unset($_SESSION['message_type']);
+      ?>
     <?php endif; ?>
 
     <div class="row mb-4">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="stats-card">
           <div class="text-primary">
             <i class="fas fa-shopping-cart fa-2x"></i>
@@ -224,22 +261,13 @@ $all_count = $count_data['count'] ?? 0;
           <div class="text-muted">Total Orders</div>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="stats-card">
           <div class="text-info">
             <i class="fas fa-truck fa-2x"></i>
           </div>
           <div class="stats-number"><?= $all_count ?></div>
-          <div class="text-muted">All Orders</div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="stats-card">
-          <div class="text-success">
-            <i class="fas fa-check-circle fa-2x"></i>
-          </div>
-          <div class="stats-number"><?= $all_count ?></div>
-          <div class="text-muted">All Orders</div>
+          <div class="text-muted">Active Orders</div>
         </div>
       </div>
     </div>
@@ -310,8 +338,8 @@ $all_count = $count_data['count'] ?? 0;
                   <h5 class="mb-0">Order #<?= $order['order_id'] ?></h5>
                   <small class="text-muted">Placed by <?= htmlspecialchars($customer_name) ?></small>
                 </div>
-                <span class="badge bg-info">
-                  Order Placed
+                <span class="status-badge status-active">
+                  Active
                 </span>
               </div>
               
@@ -353,6 +381,42 @@ $all_count = $count_data['count'] ?? 0;
                   <a href="invoice.php?order_id=<?= $order['order_id'] ?>" class="btn btn-sm btn-outline-secondary btn-action">
                     <i class="fas fa-file-invoice me-1"></i> Invoice
                   </a>
+                  
+                  <button type="button" class="btn btn-sm btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#cancelModal<?= $order['order_id'] ?>">
+                    <i class="fas fa-times me-1"></i> Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cancel Order Modal for each order -->
+            <div class="modal fade" id="cancelModal<?= $order['order_id'] ?>" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Cancel Order #<?= $order['order_id'] ?></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <form method="POST">
+                    <div class="modal-body">
+                      <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
+                      <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> This action will permanently delete this order from the database. This cannot be undone.
+                      </div>
+                      <div class="mb-3">
+                        <label for="cancelReason<?= $order['order_id'] ?>" class="form-label">Reason for cancellation</label>
+                        <textarea class="form-control" id="cancelReason<?= $order['order_id'] ?>" name="cancel_reason" rows="3" required></textarea>
+                        <div class="form-text">Please provide a reason for cancelling this order.</div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" name="cancel_order" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i> Delete Order Permanently
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -391,11 +455,7 @@ $all_count = $count_data['count'] ?? 0;
     </div>
   </div>
 
-  <footer class="mt-5 py-4 bg-white text-center text-muted">
-    <div class="container">
-      <p>© 2023 Galaxy The Gadget. All rights reserved.</p>
-    </div>
-  </footer>
+<?php include('includes/footer.php'); ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -408,6 +468,17 @@ $all_count = $count_data['count'] ?? 0;
           const bsAlert = new bootstrap.Alert(alert);
           bsAlert.close();
         }, 5000);
+      });
+      
+      // Add confirmation for delete actions
+      const deleteForms = document.querySelectorAll('form[method="POST"]');
+      deleteForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+          const orderId = this.querySelector('input[name="order_id"]').value;
+          if (!confirm(`Are you sure you want to permanently delete Order #${orderId}? This action cannot be undone.`)) {
+            e.preventDefault();
+          }
+        });
       });
     });
   </script>
