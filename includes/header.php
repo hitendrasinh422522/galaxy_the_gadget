@@ -71,15 +71,13 @@ if (session_status() === PHP_SESSION_NONE) {
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             <?php if (isset($_SESSION['user_id'])): ?>
-
               <?php if ($_SESSION['role'] === 'admin'): ?>
                 <li><a class="dropdown-item" href="admin/dashboard.php"><i class="fas fa-cogs me-2"></i> Admin Panel</a></li>
               <?php else: ?>
                 <li><a class="dropdown-item" href="my_profile.php"><i class="fas fa-user me-2"></i> My Profile</a></li>
                 <li><a class="dropdown-item" href="view_all_order.php"><i class="fas fa-clipboard-list me-2"></i> My Orders</a></li>
               <?php endif; ?>
-
-             
+            
 
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
