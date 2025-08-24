@@ -78,7 +78,9 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li><a class="dropdown-item" href="my_profile.php"><i class="fas fa-user me-2"></i> My Profile</a></li>
                 <li><a class="dropdown-item" href="view_all_order.php"><i class="fas fa-clipboard-list me-2"></i> My Orders</a></li>
               <?php endif; ?>
-            
+
+             
+
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
             <?php else: ?>
