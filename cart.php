@@ -1,298 +1,398 @@
 <?php
-session_start();
-require_once 'config/database.php';
-
-// Redirect to login if not authenticated
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-$db = (new Database())->connect();
-$error = '';
-$success = '';
-
-// Initialize cart if not exists
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
-}
-
-// Handle add to cart requests
+// Handle Add to Cart
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     $product_id = $_POST['product_id'];
+    $product_name = $_POST['product_name'];
+    $product_price = $_POST['product_price'];
+    $product_image = $_POST['product_image'];
     $quantity = $_POST['quantity'] ?? 1;
-    
-    // Fetch product details
-    $stmt = $db->prepare("SELECT id, name, price, image FROM products WHERE id = :id");
-    $stmt->bindParam(":id", $product_id);
-    $stmt->execute();
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if ($product) {
-        if (isset($_SESSION['cart'][$product_id])) {
-            $_SESSION['cart'][$product_id]['quantity'] += $quantity;
-        } else {
-            $_SESSION['cart'][$product_id] = [
-                'id' => $product['id'],
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'image' => $product['image'],
-                'quantity' => $quantity
-            ];
-        }
-        $success = "Product added to cart!";
-    } else {
-        $error = "Product not found!";
-    }
-}
 
-// Handle cart quantity updates
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_cart'])) {
-    foreach ($_POST['quantities'] as $product_id => $quantity) {
-        $quantity = (int)$quantity;
-        if ($quantity > 0) {
-            $_SESSION['cart'][$product_id]['quantity'] = $quantity;
-        } else {
-            unset($_SESSION['cart'][$product_id]);
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+
+    // If product exists, increase quantity
+    $found = false;
+    foreach ($_SESSION['cart'] as &$item) {
+        if ($item['id'] == $product_id) {
+            $item['quantity'] += $quantity;
+            $found = true;
+            break;
         }
     }
-    $success = "Cart updated successfully!";
+    unset($item);
+
+    // Otherwise add new
+    if (!$found) {
+        $_SESSION['cart'][] = [
+            'id' => $product_id,
+            'name' => $product_name,
+            'price' => $product_price,
+            'image' => $product_image,
+            'quantity' => $quantity
+        ];
+    }
+
+    header("Location: cart.php");
+    exit();
 }
 
-// Handle remove item from cart
+// Handle Remove
 if (isset($_GET['remove'])) {
-    $product_id = $_GET['remove'];
-    if (isset($_SESSION['cart'][$product_id])) {
-        unset($_SESSION['cart'][$product_id]);
-        $success = "Item removed from cart!";
-    }
+    $remove_id = $_GET['remove'];
+    $_SESSION['cart'] = array_filter($_SESSION['cart'], function($item) use ($remove_id) {
+        return $item['id'] != $remove_id;
+    });
+    header("Location: cart.php");
+    exit();
 }
 
-// Calculate cart totals
-$subtotal = 0;
-$total_items = 0;
-
-foreach ($_SESSION['cart'] as $item) {
-    $subtotal += $item['price'] * $item['quantity'];
-    $total_items += $item['quantity'];
+// Handle Empty
+if (isset($_GET['empty'])) {
+    unset($_SESSION['cart']);
+    header("Location: cart.php");
+    exit();
 }
-
-// Shipping and tax calculation
-$shipping = $subtotal > 0 ? 5.00 : 0; // Flat rate shipping
-$tax = $subtotal * 0.08; // 8% tax
-$total = $subtotal + $shipping + $tax;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart | Galaxy The Gadget</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #6c5ce7;
-            --secondary-color: #a29bfe;
-            --dark-color: #2d3436;
-            --light-color: #f5f6fa;
-        }
-        
-        body {
-            background: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .cart-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        
-        .cart-header {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 20px;
-        }
-        
-        .cart-item {
-            border-bottom: 1px solid #eee;
-            padding: 20px 0;
-        }
-        
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-        
-        .product-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        
-        .quantity-input {
-            width: 60px;
-            text-align: center;
-        }
-        
-        .summary-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-        }
-        
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-        }
-        
-        .btn-primary:hover {
-            background: var(--secondary-color);
-        }
-        
-        .btn-outline-primary {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-outline-primary:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .empty-cart {
-            text-align: center;
-            padding: 50px 0;
-        }
-        
-        .empty-cart-icon {
-            font-size: 5rem;
-            color: #ddd;
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Shopping Cart - Galaxy The Gadget</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --secondary: #ff6584;
+      --dark: #2a2a72;
+      --light: #f8f9fa;
+      --gray: #8a8a8a;
+    }
+    
+    body {
+      background-color: #f9fafb;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .cart-header {
+      background: linear-gradient(135deg, var(--dark) 0%, #4a4ac4 100%);
+      color: white;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cart-item {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .cart-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .product-img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      border-radius: 10px;
+      padding: 10px;
+      background: var(--light);
+    }
+    
+    .item-name {
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 1.1rem;
+    }
+    
+    .item-price {
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .quantity-badge {
+      background: var(--light);
+      color: var(--dark);
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+    }
+    
+    .remove-btn {
+      background: rgba(255, 101, 132, 0.1);
+      color: var(--secondary);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .remove-btn:hover {
+      background: var(--secondary);
+      color: white;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 2rem;
+    }
+    
+    .summary-title {
+      color: var(--dark);
+      font-weight: 700;
+      border-bottom: 2px solid var(--light);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    
+    .grand-total {
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--primary);
+      border-top: 2px solid var(--light);
+      padding-top: 1rem;
+    }
+    
+    .empty-cart {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    
+    .empty-cart i {
+      font-size: 5rem;
+      color: #e0e0e0;
+      margin-bottom: 1.5rem;
+    }
+    
+    .empty-cart p {
+      color: var(--gray);
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .action-btn {
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-checkout {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.1rem;
+    }
+    
+    .btn-checkout:hover {
+      background: #554fd8;
+      transform: translateY(-2px);
+    }
+    
+    .btn-continue {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    
+    .btn-continue:hover {
+      background: var(--light);
+    }
+    
+    .btn-empty {
+      background: rgba(255, 101, 132, 0.1);
+      color: var(--secondary);
+      border: 2px solid transparent;
+    }
+    
+    .btn-empty:hover {
+      background: var(--secondary);
+      color: white;
+    }
+    
+    .cart-icon {
+      background: rgba(255, 255, 255, 0.2);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+  </style>
 </head>
 <body>
-<div class="container py-5">
-    <div class="row">
-        <div class="col-12">
-            <div class="cart-container">
-                <div class="cart-header">
-                    <h2><i class="fas fa-shopping-cart me-2"></i>Your Shopping Cart</h2>
-                </div>
-                
-                <div class="p-4">
-                    <?php if ($error): ?>
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <?= htmlspecialchars($error) ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <?php if ($success): ?>
-                        <div class="alert alert-success alert-dismissible fade show">
-                            <?= htmlspecialchars($success) ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <?php if (empty($_SESSION['cart'])): ?>
-                        <div class="empty-cart">
-                            <div class="empty-cart-icon">
-                                <i class="fas fa-shopping-cart"></i>
-                            </div>
-                            <h3>Your cart is empty</h3>
-                            <p>Looks like you haven't added any items to your cart yet.</p>
-                            <a href="products.php" class="btn btn-primary">
-                                <i class="fas fa-arrow-left me-2"></i>Continue Shopping
-                            </a>
-                        </div>
-                    <?php else: ?>
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <form method="post" action="cart.php">
-                                    <?php foreach ($_SESSION['cart'] as $item): ?>
-                                        <div class="cart-item">
-                                            <div class="row align-items-center">
-                                                <div class="col-md-2">
-                                                    <img src="uploads/products/<?= htmlspecialchars($item['image']) ?>" 
-                                                         alt="<?= htmlspecialchars($item['name']) ?>" class="product-img">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <h5><?= htmlspecialchars($item['name']) ?></h5>
-                                                    <p class="text-muted mb-0">$<?= number_format($item['price'], 2) ?></p>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="input-group">
-                                                        <input type="number" name="quantities[<?= $item['id'] ?>]" 
-                                                               value="<?= $item['quantity'] ?>" min="1" 
-                                                               class="form-control quantity-input">
-                                                        <a href="cart.php?remove=<?= $item['id'] ?>" 
-                                                           class="btn btn-outline-danger" title="Remove">
-                                                            <i class="fas fa-trash"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 text-end">
-                                                    <h5>$<?= number_format($item['price'] * $item['quantity'], 2) ?></h5>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                    
-                                    <div class="d-flex justify-content-between mt-4">
-                                        <a href="products.php" class="btn btn-outline-primary">
-                                            <i class="fas fa-arrow-left me-2"></i>Continue Shopping
-                                        </a>
-                                        <button type="submit" name="update_cart" class="btn btn-primary">
-                                            <i class="fas fa-sync-alt me-2"></i>Update Cart
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            
-                            <div class="col-lg-4 mt-4 mt-lg-0">
-                                <div class="summary-card">
-                                    <h4 class="mb-4">Order Summary</h4>
-                                    
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Subtotal (<?= $total_items ?> items)</span>
-                                        <span>$<?= number_format($subtotal, 2) ?></span>
-                                    </div>
-                                    
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Shipping</span>
-                                        <span>$<?= number_format($shipping, 2) ?></span>
-                                    </div>
-                                    
-                                    <div class="d-flex justify-content-between mb-3">
-                                        <span>Tax</span>
-                                        <span>$<?= number_format($tax, 2) ?></span>
-                                    </div>
-                                    
-                                    <hr>
-                                    
-                                    <div class="d-flex justify-content-between mb-4">
-                                        <h5>Total</h5>
-                                        <h5>$<?= number_format($total, 2) ?></h5>
-                                    </div>
-                                    
-                                    <a href="checkout.php" class="btn btn-primary w-100 py-2">
-                                        <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
+<?php include('includes/header.php'); ?>
+
+<div class="cart-header">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h1 class="display-5 fw-bold"><i class="fas fa-shopping-cart me-3"></i>Your Shopping Cart</h1>
+        <p class="lead">Review and manage your gadgets before checkout</p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <div class="cart-icon">
+          <i class="fas fa-shopping-basket fa-2x"></i>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <?php if (!empty($_SESSION['cart'])): ?>
+        <?php foreach ($_SESSION['cart'] as $item): 
+          $total = $item['price'] * $item['quantity'];
+        ?>
+          <div class="cart-item">
+            <div class="row align-items-center">
+              <div class="col-3 col-md-2">
+                <img src="<?= $item['image'] ?>" class="product-img img-fluid" alt="<?= htmlspecialchars($item['name']) ?>">
+              </div>
+              <div class="col-9 col-md-4">
+                <h3 class="item-name"><?= htmlspecialchars($item['name']) ?></h3>
+                <div class="item-price">$<?= number_format($item['price'], 2) ?></div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="d-flex align-items-center">
+                  <span class="quantity-badge">Qty: <?= $item['quantity'] ?></span>
+                </div>
+              </div>
+              <div class="col-4 col-md-2">
+                <div class="fw-bold text-dark">$<?= number_format($total, 2) ?></div>
+              </div>
+              <div class="col-2 col-md-1 text-end">
+                <a href="cart.php?remove=<?= $item['id'] ?>" class="remove-btn" title="Remove item">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
+        
+        <div class="d-flex justify-content-between mt-4">
+          <a href="cart.php?empty=1" class="btn btn-empty action-btn">
+            <i class="fas fa-trash-alt me-2"></i>Empty Cart
+          </a>
+          <a href="product_detail.php"  class="btn btn-continue action-btn">
+            <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+          </a>
+        </div>
+      <?php else: ?>
+        <div class="empty-cart">
+          <i class="fas fa-shopping-cart"></i>
+          <h3 class="text-muted">Your cart is empty</h3>
+          <p>Looks like you haven't added any gadgets to your cart yet.</p>
+          <a href="product_detail.php" class="btn btn-primary btn-lg action-btn">
+            <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+          </a>
+        </div>
+      <?php endif; ?>
+    </div>
+    
+    <?php if (!empty($_SESSION['cart'])): ?>
+    <div class="col-lg-4 mt-4 mt-lg-0">
+      <div class="summary-card">
+        <h3 class="summary-title">Order Summary</h3>
+        
+        <?php 
+        $grand_total = 0;
+        $item_count = 0;
+        foreach ($_SESSION['cart'] as $item): 
+          $total = $item['price'] * $item['quantity'];
+          $grand_total += $total;
+          $item_count += $item['quantity'];
+        ?>
+        <?php endforeach; ?>
+        
+        <div class="summary-item">
+          <span>Items (<?= $item_count ?>):</span>
+          <span>$<?= number_format($grand_total, 2) ?></span>
+        </div>
+        
+        <div class="summary-item">
+          <span>Shipping:</span>
+          <span><?= $grand_total > 50 ? 'FREE' : '$9.99' ?></span>
+        </div>
+        
+        <div class="summary-item">
+          <span>Tax:</span>
+          <span>$<?= number_format($grand_total * 0.08, 2) ?></span>
+        </div>
+        
+        <?php 
+        $shipping = $grand_total > 50 ? 0 : 9.99;
+        $tax = $grand_total * 0.08;
+        $final_total = $grand_total + $shipping + $tax;
+        ?>
+        
+        <div class="summary-item grand-total">
+          <span>Total:</span>
+          <span>$<?= number_format($final_total, 2) ?></span>
+        </div>
+        
+        <div class="mt-4">
+          <a href=checkout.php class="btn btn-checkout action-btn">
+            Proceed to Checkout <i class="fas fa-arrow-right ms-2"></i>
+          </a>
+        </div>
+        
+        <div class="mt-3 text-center">
+          <small class="text-muted">
+            <i class="fas fa-lock me-1"></i> Your payment information is secure and encrypted
+          </small>
+        </div>
+      </div>
+    </div>
+    <?php endif; ?>
+  </div>
+</div>
+
+<?php include('includes/footer.php'); ?>
+
+<script>
+  // Add subtle animations
+  document.addEventListener('DOMContentLoaded', function() {
+    const cartItems = document.querySelectorAll('.cart-item');
+    cartItems.forEach((item, index) => {
+      item.style.animationDelay = `${index * 0.1}s`;
+      item.classList.add('animate__animated', 'animate__fadeInUp');
+    });
+  });
+</script>
 </body>
 </html>
